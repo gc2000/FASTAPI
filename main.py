@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Response, status, HTTPException
+from fastapi import FastAPI, Response, HTTPException, status
 from fastapi.params import Body
 from pydantic import BaseModel
 import psycopg2, time
@@ -8,7 +8,6 @@ class Post (BaseModel):
     title: str
     content: str
     author: str
-    
 
 while True:
     try: 
@@ -34,25 +33,64 @@ def get_posts():
 @app.get("/posts/{id}")
 def get_posts_by_id(id: int):
     try:
-        cur.execute("""SELECT * FROM posts where id=%s""", (id,))
-        post = cur.fetchone()
+        cur.execute("""SELECT * FROM posts where id=%s """, (str(id),))
+        fetched_post = cur.fetchone()
     
-        if post is None:
-            raise HTTPException(status_code=404, detail="Post not found")
+        if fetched_post is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with id: {id} not found")
 
-        return {"id": post[0], "title": post[1], "content": post[2]}
+        return {"data": fetched_post}
     
-    except (psycopg2.Error, Exception) as e:
+    except (psycopg2.Error) as e:
         raise HTTPException(status_code=500, detail="Internal Server Error")
     
+
+@app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_posts_by_id(id: int):
+    try:
+        cur.execute("""DELETE FROM posts where id=%s RETURNING * """, (str(id),))
+        deleted_post = cur.fetchone()
+        conn.commit()
+        if deleted_post is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with id: {id} not found")
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
+    except (psycopg2.Error) as e:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 @app.post("/posts")
 def insert_posts(post: Post):
     try:
-        postgres_insert_query = """INSERT INTO posts (title, content, author) VALUES (%s,%s,%s)"""
+        postgres_insert_query = """INSERT INTO posts (title, content, author) VALUES (%s,%s,%s) RETURNING * """
         record_to_insert = (post.title, post.content, post.author,)
         cur.execute(postgres_insert_query, record_to_insert)
         conn.commit()
-        return {"message": "Record inserted successfully"}
-    except (psycopg2.Error, Exception) as e:
+        
+        new_post = cur.fetchone()
+        return {"message": new_post}
+    except (psycopg2.Error) as e:
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+@app.put("/posts/{id}", status_code = status.HTTP_201_CREATED)
+def update_posts_by_id(id: int, updated_data: dict):
+    try:
+        update_statement = "UPDATE Posts SET "
+        update_statement += ", ".join([f"{key} = %s" for key in updated_data.keys()])
+        update_statement += " WHERE id = %s RETURNING *"
+
+        # Extract values from updated_data and create tuple for parameters
+        values = list(updated_data.values())
+        values.append(id)
+        
+        # Execute the update statement with the parameters
+        cur.execute(update_statement, tuple(values))
+        # Commit the transaction
+        conn.commit()
+        updated_post = cur.fetchone()
+    
+        return {"message": updated_post}
+    
+    except (psycopg2.Error) as e:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+    
