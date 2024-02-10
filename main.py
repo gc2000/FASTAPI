@@ -45,18 +45,6 @@ def get_posts_by_id(id: int):
         raise HTTPException(status_code=500, detail="Internal Server Error")
     
 
-@app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_posts_by_id(id: int):
-    try:
-        cur.execute("""DELETE FROM posts where id=%s RETURNING * """, (str(id),))
-        deleted_post = cur.fetchone()
-        conn.commit()
-        if deleted_post is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with id: {id} not found")
-        return Response(status_code=status.HTTP_204_NO_CONTENT)
-    except (psycopg2.Error) as e:
-        raise HTTPException(status_code=500, detail="Internal Server Error")
-
 @app.post("/posts")
 def insert_posts(post: Post):
     try:
@@ -94,3 +82,14 @@ def update_posts_by_id(id: int, updated_data: dict):
         raise HTTPException(status_code=500, detail="Internal Server Error")
     
     
+@app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_posts_by_id(id: int):
+    try:
+        cur.execute("""DELETE FROM posts where id=%s RETURNING * """, (str(id),))
+        deleted_post = cur.fetchone()
+        conn.commit()
+        if deleted_post is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with id: {id} not found")
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
+    except (psycopg2.Error) as e:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
