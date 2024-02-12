@@ -1,8 +1,8 @@
-from sqlalchemy import TIMESTAMP, Column, Integer, String, text
+from sqlalchemy import TIMESTAMP, Column, Integer, String, text, LargeBinary
 from .database import Base
 
 class Post(Base):
-    __tablename__ = "posts"
+    __tablename__ = "posts1"
 
     id = Column(Integer, primary_key=True)
     title = Column(String)
@@ -12,7 +12,8 @@ class Post(Base):
     created_at = Column(TIMESTAMP(timezone=True), server_default=text('now()'))
     
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = "users1"
+    
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True, nullable= False)
     password = Column(String, nullable= False,)
