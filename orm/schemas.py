@@ -16,3 +16,10 @@ class Post (PostBase):
     class Config:
         orm_mode = True
         # from_attributes = True
+        
+class UserBase (BaseModel):
+    email: str
+    password: str
+    
+class UserCreate (UserBase):
+    pass    
