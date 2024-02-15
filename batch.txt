@@ -1,0 +1,8 @@
+# 1. Enter Venv
+source /code/venv-1/bin/activate
+# 2. Ensure Python extension is installed.
+# 3. Ensure Postgre DB is up
+# 4. Enter working folder
+cd /code/fastapi
+uvicorn orm.main:app --reload
+
