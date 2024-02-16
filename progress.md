@@ -34,3 +34,14 @@
 87. Sqlalchemy Relationships 8:33:37
 88. Query Parameters 8:38:32
 89. Cleanup our main.py file 8:50:46
+
+2024/02/16 - Pull Requeset 10 - Votes
+90. Environment Variables 8:53:53
+### Section 10: Vote/Like System
+91. Vote/Like Theory 9:21:20
+92. Votes Table 9:26:36
+93. Votes Sqlalchemy 9:31:33
+94. Votes Route 9:34:11
+95. SQL Joins 9:52:31
+96. Joins in SqlAlchemy 10:15:26
+97. Get One Post with Joins 10:28:21
