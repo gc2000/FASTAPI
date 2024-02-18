@@ -45,3 +45,12 @@
 95. SQL Joins 9:52:31
 96. Joins in SqlAlchemy 10:15:26
 97. Get One Post with Joins 10:28:21
+
+2024/02/18 - Pull Requeset 11 - Alembic
+### Section 11: Database Migration w/ Alembic
+98. What is a database migration tool 10:30:18
+99. Alembic Setup 10:33:45
+100. Alembic First Revision 
+101. Alembic Rollback database Schema 
+102. Alembic finishing up the rest of the schema 
+103. Disable SqlAlchemy create Engine 11:13:50
