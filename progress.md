@@ -54,3 +54,10 @@
 101. Alembic Rollback database Schema 
 102. Alembic finishing up the rest of the schema 
 103. Disable SqlAlchemy create Engine 11:13:50
+
+2024/02/21 - Pull Requeset 12 - CORS
+### Section 12: Pre Deployment Checklist
+104. What is CORS????? 11:14:28
+105. Git PreReqs 11:23:38
+106. Git Install 11:27:40
+107. Github 11:29:23
